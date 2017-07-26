@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="sql server," />
 
 
 
@@ -87,16 +87,21 @@
 
 
 
-<meta name="description" content="看山不是山">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Terra&#39;s">
-<meta property="og:url" content="https://terrahuang.github.io/archives/2017/07/index.html">
+<meta name="description" content="Parameter sniffing在SQL Server中有一个叫做 “Parameter sniffing”的特性。SQL Server在存储过程执行之前都会制定一个执行计划。在上面的例子中，SQL在编译的时候并不知道@thedate的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@thedate的参数大部分都是非空字符串，而FACT表中有40%的thedate字段都是nu">
+<meta name="keywords" content="sql server">
+<meta property="og:type" content="article">
+<meta property="og:title" content="执行储存过程参数最好不要传null">
+<meta property="og:url" content="https://terrahuang.github.io/2017/07/26/执行储存过程参数最好不要传null/index.html">
 <meta property="og:site_name" content="Terra&#39;s">
-<meta property="og:description" content="看山不是山">
+<meta property="og:description" content="Parameter sniffing在SQL Server中有一个叫做 “Parameter sniffing”的特性。SQL Server在存储过程执行之前都会制定一个执行计划。在上面的例子中，SQL在编译的时候并不知道@thedate的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@thedate的参数大部分都是非空字符串，而FACT表中有40%的thedate字段都是nu">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://octodex.github.com/images/minion.png">
+<meta property="og:image" content="http://octodex.github.com/images/minion.png">
+<meta property="og:updated_time" content="2017-07-26T15:32:14.775Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Terra&#39;s">
-<meta name="twitter:description" content="看山不是山">
+<meta name="twitter:title" content="执行储存过程参数最好不要传null">
+<meta name="twitter:description" content="Parameter sniffing在SQL Server中有一个叫做 “Parameter sniffing”的特性。SQL Server在存储过程执行之前都会制定一个执行计划。在上面的例子中，SQL在编译的时候并不知道@thedate的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@thedate的参数大部分都是非空字符串，而FACT表中有40%的thedate字段都是nu">
+<meta name="twitter:image" content="http://octodex.github.com/images/minion.png">
 
 
 
@@ -124,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://terrahuang.github.io/archives/2017/07/"/>
+  <link rel="canonical" href="https://terrahuang.github.io/2017/07/26/执行储存过程参数最好不要传null/"/>
 
 
 
 
 
-  <title> 归档 | Terra's </title>
+  <title> 执行储存过程参数最好不要传null | Terra's </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -155,7 +160,7 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -285,103 +290,264 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
-
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 2 篇日志。 继续努力。
-    </span>
-
+  <div id="posts" class="posts-expand">
     
-
-      
-      
-      
-
-      
-        
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
-        </div>
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/07/26/执行储存过程参数最好不要传null/" itemprop="url">
-              
-                <span itemprop="name">执行储存过程参数最好不要传null</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-07-26T18:02:00+08:00"
-              content="2017-07-26" >
-          07-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/07/24/JS的事件监听机制/" itemprop="url">
-              
-                <span itemprop="name">JS的事件监听机制</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-07-24T19:30:32+08:00"
-              content="2017-07-24" >
-          07-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-  </section>
 
   
 
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://terrahuang.github.io/2017/07/26/执行储存过程参数最好不要传null/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Terra">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Terra's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                执行储存过程参数最好不要传null
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-26T18:02:00+08:00">
+                2017-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/26/执行储存过程参数最好不要传null/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/26/执行储存过程参数最好不要传null/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/07/26/执行储存过程参数最好不要传null/" class="leancloud_visitors" data-flag-title="执行储存过程参数最好不要传null">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Parameter-sniffing"><a href="#Parameter-sniffing" class="headerlink" title="Parameter sniffing"></a>Parameter sniffing</h2><p>在SQL Server中有一个叫做 “Parameter sniffing”的特性。SQL Server在存储过程执行之前都会制定一个执行计划。在上面的例子中，SQL在编译的时候并不知道@thedate的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@thedate的参数大部分都是非空字符串，而FACT表中有40%的thedate字段都是null，那么SQL Server就会选择全表扫描而不是索引扫描来对参数@thedate制定执行计划。全表扫描是在参数为空或为0的时候最好的执行计划。但是全表扫描严重影响了性能。<br><a id="more"></a><br>假设你第一次使用了Exec pro_ImAnalysis_daily @thedate=’20080312’那么SQL Server就会使用20080312这个值作为下次参数@thedate的执行计划的参考值，而不会进行全表扫描了，但是如果使用@thedate=null,则下次执行计划就要根据全表扫描进行了。</p>
+<h2 id="如何避免Parameter-sniffing问题"><a href="#如何避免Parameter-sniffing问题" class="headerlink" title="如何避免Parameter sniffing问题"></a>如何避免Parameter sniffing问题</h2><h3 id="有两种方式能够避免出现“Parameter-sniffing”问题："><a href="#有两种方式能够避免出现“Parameter-sniffing”问题：" class="headerlink" title="有两种方式能够避免出现“Parameter sniffing”问题："></a>有两种方式能够避免出现“Parameter sniffing”问题：</h3><ul>
+<li>通过使用declare声明的变量来代替参数：使用set @variable=@thedate的方式，将出现@thedate的sql语句全部用@variable来代替。</li>
+<li><p>将受影响的sql语句隐藏起来，比如：</p>
+<ul>
+<li>将受影响的sql语句放到某个子存储过程中，比如我们在@thedate设置成为今天后再调用一个字存储过程将@thedate作为参数传入就可以了。</li>
+<li>annnnn</li>
+<li>使用动态 <code>sql EXEC(@sql)</code>来执行受影响的sql。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">alert(&quot;123&quot;);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">alert(&apos;Hello World!&apos;);</div><div class="line">  </div></pre></td></tr></table></figure>
+<p><a href="https://github.com/upstage/" title="Visit Upstage!" target="_blank" rel="external">Upstage</a></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>path to data files to supply the data that will be passed into templates.</td>
+</tr>
+<tr>
+<td>engine</td>
+<td>engine to be used for processing templates. Handlebars is the default.</td>
+</tr>
+<tr>
+<td>ext</td>
+<td>extension to be used for dest files.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Table-of-Contents"><a href="#Table-of-Contents" class="headerlink" title="Table of Contents"></a>Table of Contents</h1><ul>
+<li><a href="#chapter-1">Chapter 1</a></li>
+<li><a href="#chapter-2">Chapter 2</a></li>
+<li><a href="#chapter-3">Chapter 3</a></li>
+</ul>
+<p><img src="http://octodex.github.com/images/minion.png" alt=""><br><span itemprop="image" itemscope="" itemtype="http://schema.org/ImageObject"><img itemprop="url image" src="http://octodex.github.com/images/minion.png" class="full-image"><meta itemprop="width" content="auto"><meta itemprop="height" content="auto"></span></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql-server/" rel="tag"># sql server</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/24/JS的事件监听机制/" rel="next" title="JS的事件监听机制">
+                <i class="fa fa-chevron-left"></i> JS的事件监听机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -389,6 +555,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -408,8 +585,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.png"
@@ -489,6 +675,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Parameter-sniffing"><span class="nav-number">1.</span> <span class="nav-text">Parameter sniffing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何避免Parameter-sniffing问题"><span class="nav-number">2.</span> <span class="nav-text">如何避免Parameter sniffing问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#有两种方式能够避免出现“Parameter-sniffing”问题："><span class="nav-number">2.1.</span> <span class="nav-text">有两种方式能够避免出现“Parameter sniffing”问题：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Table-of-Contents"><span class="nav-number"></span> <span class="nav-text">Table of Contents</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -617,7 +819,9 @@
 
 
   
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
 
 
   
@@ -636,6 +840,18 @@
       <script id="dsq-count-scr" src="https://terrahuang.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://terrahuang.github.io/2017/07/26/执行储存过程参数最好不要传null/';
+          this.page.identifier = '2017/07/26/执行储存过程参数最好不要传null/';
+          this.page.title = '执行储存过程参数最好不要传null';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://terrahuang.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   

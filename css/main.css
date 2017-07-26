@@ -487,8 +487,8 @@ code {
 code {
   padding: 2px 4px;
   word-wrap: break-word;
-  color: #555;
-  background: #eee;
+  color: #fff;
+  background: #fc9b23;
   border-radius: 3px;
   font-size: 13px;
 }
@@ -706,9 +706,7 @@ pre .javascript .function {
   float: left;
 }
 .page-post-detail .post-body .group-picture-column {
-  float: none;
   margin-top: 10px;
-  width: auto !important;
 }
 .page-post-detail .post-body .group-picture-column img {
   margin: 0 auto;
@@ -1607,9 +1605,9 @@ pre .javascript .function {
   height: auto;
   border: 1px solid #eee;
 /*头像圆形*/
-  border-radius: 80px;
-  -webkit-border-radius: 80px;
-  -moz-border-radius: 80px;
+  border-radius: 128px;
+  -webkit-border-radius: 128px;
+  -moz-border-radius: 128px;
 }
 .site-author-name {
   margin: 0;
@@ -1691,7 +1689,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #d703ac;
+  background: #00ff9a;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2131,7 +2129,7 @@ pre .javascript .function {
   background: #fff;
   color: #333;
   z-index: 9999;
-  border-radius: 5px;
+/*border-radius: 5px*/
 }
 @media (max-width: 767px) {
   .local-search-popup {
@@ -2202,12 +2200,14 @@ pre .javascript .function {
 }
 .local-search-popup .search-icon {
   float: left;
+  color: #fc9b23;
 }
 .local-search-popup .popup-btn-close {
   border-left: 1px solid #eee;
   float: right;
   cursor: pointer;
   padding-left: 10px;
+  color: #fc9b23;
 }
 .local-search-popup #no-result {
   position: absolute;
@@ -2240,13 +2240,6 @@ pre .javascript .function {
 .site-pv .busuanzi-value,
 .page-pv .busuanzi-value {
   margin: 0 5px;
-}
-.site-uv {
-  margin-right: 10px;
-}
-.site-uv::after {
-  content: "|";
-  padding-left: 10px;
 }
 .use-motion .post {
   opacity: 0;

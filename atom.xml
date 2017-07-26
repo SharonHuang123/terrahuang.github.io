@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Terra&#39;s</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://terrahuang.github.io/"/>
+  <updated>2017-07-26T15:32:14.775Z</updated>
+  <id>https://terrahuang.github.io/</id>
+  
+  <author>
+    <name>Terra</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>执行储存过程参数最好不要传null</title>
+    <link href="https://terrahuang.github.io/2017/07/26/%E6%89%A7%E8%A1%8C%E5%82%A8%E5%AD%98%E8%BF%87%E7%A8%8B%E5%8F%82%E6%95%B0%E6%9C%80%E5%A5%BD%E4%B8%8D%E8%A6%81%E4%BC%A0null/"/>
+    <id>https://terrahuang.github.io/2017/07/26/执行储存过程参数最好不要传null/</id>
+    <published>2017-07-26T10:02:00.000Z</published>
+    <updated>2017-07-26T15:32:14.775Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Parameter-sniffing"><a href="#Parameter-sniffing" class="headerlink" title="Parameter sniffing"></a>Parameter sniffing</h2><p>在SQL Server中有一个叫做 “Parameter sniffing”的特性。SQL Server在存储过程执行之前都会制定一个执行计划。在上面的例子中，SQL在编译的时候并不知道@thedate的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@thedate的参数大部分都是非空字符串，而FACT表中有40%的thedate字段都是null，那么SQL Server就会选择全表扫描而不是索引扫描来对参数@thedate制定执行计划。全表扫描是在参数为空或为0的时候最好的执行计划。但是全表扫描严重影响了性能。<br><a id="more"></a><br>假设你第一次使用了Exec pro_ImAnalysis_daily @thedate=’20080312’那么SQL Server就会使用20080312这个值作为下次参数@thedate的执行计划的参考值，而不会进行全表扫描了，但是如果使用@thedate=null,则下次执行计划就要根据全表扫描进行了。</p>
+<h2 id="如何避免Parameter-sniffing问题"><a href="#如何避免Parameter-sniffing问题" class="headerlink" title="如何避免Parameter sniffing问题"></a>如何避免Parameter sniffing问题</h2><h3 id="有两种方式能够避免出现“Parameter-sniffing”问题："><a href="#有两种方式能够避免出现“Parameter-sniffing”问题：" class="headerlink" title="有两种方式能够避免出现“Parameter sniffing”问题："></a>有两种方式能够避免出现“Parameter sniffing”问题：</h3><ul>
+<li>通过使用declare声明的变量来代替参数：使用set @variable=@thedate的方式，将出现@thedate的sql语句全部用@variable来代替。</li>
+<li><p>将受影响的sql语句隐藏起来，比如：</p>
+<ul>
+<li>将受影响的sql语句放到某个子存储过程中，比如我们在@thedate设置成为今天后再调用一个字存储过程将@thedate作为参数传入就可以了。</li>
+<li>annnnn</li>
+<li>使用动态 <code>sql EXEC(@sql)</code>来执行受影响的sql。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">alert(&quot;123&quot;);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">alert(&apos;Hello World!&apos;);</div><div class="line">  </div></pre></td></tr></table></figure>
+<p><a href="https://github.com/upstage/" title="Visit Upstage!" target="_blank" rel="external">Upstage</a></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>path to data files to supply the data that will be passed into templates.</td>
+</tr>
+<tr>
+<td>engine</td>
+<td>engine to be used for processing templates. Handlebars is the default.</td>
+</tr>
+<tr>
+<td>ext</td>
+<td>extension to be used for dest files.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Table-of-Contents"><a href="#Table-of-Contents" class="headerlink" title="Table of Contents"></a>Table of Contents</h1><ul>
+<li><a href="#chapter-1">Chapter 1</a></li>
+<li><a href="#chapter-2">Chapter 2</a></li>
+<li><a href="#chapter-3">Chapter 3</a></li>
+</ul>
+<p><img src="http://octodex.github.com/images/minion.png" alt=""><br><span itemprop="image" itemscope="" itemtype="http://schema.org/ImageObject"><img itemprop="url image" src="http://octodex.github.com/images/minion.png" class="full-image"><meta itemprop="width" content="auto"><meta itemprop="height" content="auto"></span></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Parameter-sniffing&quot;&gt;&lt;a href=&quot;#Parameter-sniffing&quot; class=&quot;headerlink&quot; title=&quot;Parameter sniffing&quot;&gt;&lt;/a&gt;Parameter sniffing&lt;/h2&gt;&lt;p&gt;在SQL Server中有一个叫做 “Parameter sniffing”的特性。SQL Server在存储过程执行之前都会制定一个执行计划。在上面的例子中，SQL在编译的时候并不知道@thedate的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@thedate的参数大部分都是非空字符串，而FACT表中有40%的thedate字段都是null，那么SQL Server就会选择全表扫描而不是索引扫描来对参数@thedate制定执行计划。全表扫描是在参数为空或为0的时候最好的执行计划。但是全表扫描严重影响了性能。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="技术" scheme="https://terrahuang.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="sql server" scheme="https://terrahuang.github.io/tags/sql-server/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JS的事件监听机制</title>
+    <link href="https://terrahuang.github.io/2017/07/24/JS%E7%9A%84%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%E6%9C%BA%E5%88%B6/"/>
+    <id>https://terrahuang.github.io/2017/07/24/JS的事件监听机制/</id>
+    <published>2017-07-24T11:30:32.589Z</published>
+    <updated>2017-07-25T12:52:00.877Z</updated>
+    
+    <content type="html"><![CDATA[<p>很久以前有个叫Netscape的姑娘，她制订了Javascript的一套事件驱动机制（即事件捕获）<br>后来又有一个叫“IE”的小子，这孩子比较傲气，他认为“凭什么我要依照你的规则走”，于是他又创造了一套自己的规则（事件冒泡）<br>再后来，有个叫W3C的媒婆，想撮合这两个孩子，将他们的特点融合在了一起，这下，事件产生的顺序变成：<br>事件从根节点开始，逐级派送到子节点，若节点绑定了事件动作，则执行动作，然后继续走，这个阶段称为“捕获阶段(Capture)”；<br>执行完捕获阶段后，事件由子节点往根节点派送，若节点绑定了事件动作，则执行动作，然后继续走，这个阶段称为“冒泡阶段(Bubble)”。<br><a id="more"></a> </p>
+<p>善良的Netscape以及其姐妹们都接受了媒婆的建议，采用了新的事件规则，而骄傲固执的IE小子始终按照自己的规则执行。最终使得这成为困扰前端开发人员的兼容性问题之一。那么，怎么绑定事件呢？<br>由于这两派浏览器的差异，其绑定的方法也不一样，其中，遵循标准的浏览器使用W3C定义的addEventListener函数绑定，函数定义如下：</p>
+<p>function addEventListener(string eventFlag, function eventFunc, [bool useCapture=false])<br>eventFlag : 事件名称，如click、mouseover…<br>eventFunc: 绑定到事件中执行的动作<br>useCapture: 指定是否绑定在捕获阶段，true为是，false为否，默认为true<br>在事件监听流中可以使用event.stopPropagation()来阻止事件继续往下流</p>
+<p>IE中使用自有的attachEvent函数绑定时间，函数定义如下：<br>function attachEvent(string eventFlag, function eventFunc)<br>eventFlag: 事件名称，但要加上on，如onclick、onmouseover…<br>eventFunc: 绑定到事件中执行的动作<br>在事件监听流中可以使用window.event.cacenlBubble=false来阻止事件继续往下流<br>总结：addEventListener(string eventFlag, function eventFunc, [bool useCapture=false])，针对ff，chrome，safari浏览器，false指冒泡阶段，默认为true，指捕获阶段。不过一般我们都用false。<br> attachEvent(string eventFlag, function eventFunc)，针对ie系列、还有opera浏览器，少了事件处理机制的参数，只指定事件类型（别忘了on）和触发哪个函数。</p>
+<p>有了这些认知之后，有了大致的思路，对应的代码：<br>if(document.addEventListener){<br>document.addEventListener(‘click’, hideBox, false);<br>在document绑定信息框（竖的那个）隐藏函数（即随便点html页面的哪里关闭展开的信息框，这也是使用document.addEventListener的原因，要帮在文档上）<br>document.getElementById(‘status_hide’).addEventListener(‘click’, showBox, false);<br>在status_hide节点绑定信息框展开(详细的那个)函数并停止事件流（即点击竖的这个，展开详细的那个）<br>document.getElementById(‘status_show’).addEventListener(‘click’, stopEvent, false);<br>因为false确定的是事件冒泡，为了防止点详情的时候，向上冒泡到document，触发document设置的click时hidebox方法，在status_show我们要绑定阻止事件流函数。<br>}<br>这个明白了，针对ie再写个attachEvent的就可以了，当然ie的参数只用2个就可以了，它的时间处理机制就是冒泡不用额外设置。</p>
+<p>最后要说说这段函数。<br>var stopEvent = function(event){ e = event || window.event; if(e.stopPropagation){ e.stopPropagation(); }else { e.cancelBubble = true; } };<br>可以确定它的作用是防止前面提到的冒泡，引发不该引发的click事件。<br>可是它呢function(event){e = event || window.event}</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;很久以前有个叫Netscape的姑娘，她制订了Javascript的一套事件驱动机制（即事件捕获）&lt;br&gt;后来又有一个叫“IE”的小子，这孩子比较傲气，他认为“凭什么我要依照你的规则走”，于是他又创造了一套自己的规则（事件冒泡）&lt;br&gt;再后来，有个叫W3C的媒婆，想撮合这两个孩子，将他们的特点融合在了一起，这下，事件产生的顺序变成：&lt;br&gt;事件从根节点开始，逐级派送到子节点，若节点绑定了事件动作，则执行动作，然后继续走，这个阶段称为“捕获阶段(Capture)”；&lt;br&gt;执行完捕获阶段后，事件由子节点往根节点派送，若节点绑定了事件动作，则执行动作，然后继续走，这个阶段称为“冒泡阶段(Bubble)”。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="技术" scheme="https://terrahuang.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="javascript" scheme="https://terrahuang.github.io/tags/javascript/"/>
+    
+  </entry>
+  
+</feed>
