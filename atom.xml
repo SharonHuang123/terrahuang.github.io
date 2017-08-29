@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://terrahuang.github.io/"/>
-  <updated>2017-08-29T16:55:23.544Z</updated>
+  <updated>2017-08-29T17:19:00.171Z</updated>
   <id>https://terrahuang.github.io/</id>
   
   <author>
@@ -20,30 +20,20 @@
     <link href="https://terrahuang.github.io/2017/08/29/http-cache/"/>
     <id>https://terrahuang.github.io/2017/08/29/http-cache/</id>
     <published>2017-08-29T09:09:39.023Z</published>
-    <updated>2017-08-29T16:55:23.544Z</updated>
+    <updated>2017-08-29T17:19:00.171Z</updated>
     
     <content type="html"><![CDATA[<p>浏览器HTTP缓存机制主要有两种 <code>强缓存</code>（Pragma/Expires/Cache-Control）和 <code>缓存协商</code>（Last-Modified/ETag）。</p>
-<h2 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h2><p>所谓强缓存，就是优先命中浏览器的缓存资源，当缓存不符合条件或不存在时，再向服务器发起请求。</p>
+<h2 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h2><p>所谓强缓存，就是优先命中浏览器的缓存资源，当缓存不符合条件或不存在时，再向服务器发起请求。<br><a id="more"></a></p>
 <ul>
 <li><code>http 1.0</code> 协议版本中通过头部字段Pragma/Expires来标识</li>
-<li><code>http 1.1</code> 协议中新增了字段Cache-Control定义缓存过期时间<a id="more"></a>
-<h3 id="Pragma"><a href="#Pragma" class="headerlink" title="Pragma"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Pragma" target="_blank" rel="external">Pragma</a></h3>Pragma是通用首部字段，设置 <code>Pragma:no-cache</code> 用于禁用缓存。</li>
+<li><code>http 1.1</code> 协议中新增了字段Cache-Control定义缓存过期时间</li>
 </ul>
-<ol>
-<li><p>客户端设置如下, 目前只有IE可识别，且不一定会加到请求报文。只对当前页面有效，对页面资源无效</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;meta http-equiv=&quot;Pragma&quot; content=&quot;no-cache&quot; /&gt;</div></pre></td></tr></table></figure>
-</li>
-<li><p>若响应报文包含Pragma字段，浏览器会对资源标记，后续刷新页面不会命中缓存，而是直接发送请求。</p>
-</li>
-</ol>
+<h3 id="Pragma"><a href="#Pragma" class="headerlink" title="Pragma"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Pragma" target="_blank" rel="external">Pragma</a></h3><p>Pragma是通用首部字段，设置 <code>Pragma:no-cache</code> 用于禁用缓存。</p>
+<p>1.客户端设置如下, 目前只有IE可识别，且不一定会加到请求报文。只对当前页面有效，对页面资源无效<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;meta http-equiv=&quot;Pragma&quot; content=&quot;no-cache&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>2.若响应报文包含Pragma字段，浏览器会对资源标记，后续刷新页面不会命中缓存，而是直接发送请求。</p>
 <h3 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Expires" target="_blank" rel="external">Expires</a></h3><p>Expires是实体首部字段，设置 <code>Expires:[GMT时间值]</code> 用于知会浏览器资源缓存过期时间</p>
-<ol>
-<li><p>客户端设置如下，目前只有IE可识别，且不会加到请求报文。只对当前页面有效，对页面资源无效。如果希望不缓存页面，那么可以把content设为-1或0。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;meta http-equiv=&quot;expires&quot; content=&quot;mon, 18 apr 2016 14:30:00 GMT&quot; /&gt;</div></pre></td></tr></table></figure>
-</li>
-<li><p>若响应报文包含Expires，字段值返回的是服务端时间。若服务端与客户端时间不同步，这个过期时间就会不准确，导致出错。</p>
-</li>
-</ol>
+<p>1.客户端设置如下，目前只有IE可识别，且不会加到请求报文。只对当前页面有效，对页面资源无效。如果希望不缓存页面，那么可以把content设为-1或0。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;meta http-equiv=&quot;expires&quot; content=&quot;mon, 18 apr 2016 14:30:00 GMT&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>2.若响应报文包含Expires，字段值返回的是服务端时间。若服务端与客户端时间不同步，这个过期时间就会不准确，导致出错。</p>
 <p><strong>如果Expires和Pramga同时出现在报文中，Pragma的优先级更高</strong></p>
 <h3 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control" target="_blank" rel="external">Cache-Control</a></h3><p>Cache-Control是通用首部字段，设置 <code>Cache-Control:[cache-directive]</code> 指令来实现缓存机制。缓存指令是单向的，在响应里设置的指令，在请求中不用包含相同的指令。[cache-directive]有多个可选值，还可以组合使用，且在请求报文和响应报文定义不同，我列出了常见的几种，其它参见<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control" target="_blank" rel="external">MDN文档</a> </p>
 <table>
@@ -94,77 +84,54 @@
 </tr>
 </tbody>
 </table>
-<ol>
-<li>关闭缓存<blockquote>
-<p>Cache-Control: no-cache, no-store, must-revalidate</p>
+<p><em>示例</em></p>
+<blockquote>
+<p>1.关闭缓存<br>Cache-Control: no-cache, no-store, must-revalidate<br>2.缓存静态资源<br>Cache-Control:public, max-age=31536000</p>
 </blockquote>
-</li>
-<li>缓存静态资源<blockquote>
-<p>Cache-Control:public, max-age=31536000</p>
-</blockquote>
-</li>
-</ol>
 <h2 id="缓存协商"><a href="#缓存协商" class="headerlink" title="缓存协商"></a>缓存协商</h2><p>当浏览器缓存过期，向服务器重新发送请求，若服务器资源并未更新时，直接返回304知会客户端使用缓存资源；否则返回更新资源。响应报文通过Last-Modified和ETag来判断缓存资源是否更新。这些做可以提高缓存复用率，加快页面渲染速度。</p>
 <h3 id="Last-Modified"><a href="#Last-Modified" class="headerlink" title="Last-Modified"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Last-Modified" target="_blank" rel="external">Last-Modified</a></h3><p>Last-Modified是资源在服务器上的最后修改时间，设置格式 <code>Last-Modified: [GMT时间]</code></p>
 <ul>
 <li>客户端第一次发起请求 -&gt; 服务端</li>
-<li>服务端返回数据[加上Last-Modified信息] -&gt; 客户端 -&gt; 客户端标记资源</li>
-<li>客户端第二次请求[报文加上标记字段] -&gt; 服务端</li>
-<li>服务端[比较修改时间，若一致，直接返回304和响应报头；否则，读取更新资源并返回] -&gt; 客户端</li>
+<li>服务端返回数据 [ <em>加上Last-Modified信息</em> ] -&gt; 客户端 -&gt; 客户端标记资源</li>
+<li>客户端第二次请求 [ <em>报文加上标记字段</em> ] -&gt; 服务端</li>
+<li>服务端 [ <em>比较修改时间，若一致，直接返回304和响应报头；否则，读取更新资源并返回</em> ] -&gt; 客户端</li>
 </ul>
-<p>第二次请求报文附加字段有两个：</p>
-<ol>
-<li>If-Modified-Since:[Last-Modified-value]   该值与服务端一致，返回304 （浏览器以此字段为准）</li>
-<li>If-Unmodified-Since:[Last-Modified-value] 该值与服务端不一致，返回412</li>
-</ol>
+<blockquote>
+<p>第二次请求报文附加字段有两个：<br>If-Modified-Since: <em>Last-Modified-value</em>  该值与服务端一致，返回304 （浏览器以此字段为准）<br>If-Unmodified-Since:<em>Last-Modified-value</em> 该值与服务端不一致，返回412</p>
+</blockquote>
 <h3 id="ETag"><a href="#ETag" class="headerlink" title="ETag"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/ETag" target="_blank" rel="external">ETag</a></h3><p>ETag是服务器资源生成的唯一标识，设置格式 <code>ETag:[字符串，如md5,guid]</code></p>
 <ul>
 <li>客户端第一次发起请求 -&gt; 服务端</li>
-<li>服务端返回数据[加上唯一标识，若是分布式，须保证生成唯一标识的算法一致] -&gt; 客户端 -&gt; 客户端标记ETag</li>
-<li>客户端第二次请求[报文加上标记字段] -&gt; 服务端</li>
-<li>服务端[比较唯一标识，若一致，直接返回304和响应报头；否则，读取更新资源并返回] -&gt; 客户端</li>
+<li>服务端返回数据 [ <em>加上唯一标识，若是分布式，须保证生成唯一标识的算法一致</em> ] -&gt; 客户端 -&gt; 客户端标记ETag</li>
+<li>客户端第二次请求 [ <em>报文加上标记字段</em> ] -&gt; 服务端</li>
+<li>服务端 [ <em>比较唯一标识，若一致，直接返回304和响应报头；否则，读取更新资源并返回</em> ] -&gt; 客户端</li>
 </ul>
-<p>第二次请求报文附加字段有两个：<br>If-None-Match: [ETag-value]  匹配上ETag，直接回送304  （浏览器以此字段为准）<br>If-Match: [ETag-value]      没有匹配上ETag，或者收到了“*”值而当前并没有该资源实体，则应当返回412</p>
-<ul>
-<li><strong>当If-None-Match与If-Modified-Since一同使用，If-None-Match优先级更高</strong>  </li>
-<li><strong>Last-Modified和ETag同时被使用，则要求它们的验证都必须通过才会返回304，否则返回更新资源和200</strong></li>
-</ul>
-<h2 id="实际应用技巧"><a href="#实际应用技巧" class="headerlink" title="实际应用技巧"></a>实际应用技巧</h2><h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><ol>
-<li><p>网上有种说法，地址栏输入URL，F5/Ctrl+R(刷新按钮)用自动加上“Cache-Control:max-age=0”，不会命中强缓存，直接发起请求。<br>另外还有一个说法， 不打开DevTool会直接向服务端发起请求，打开则会命中缓存。</p>
-<p>这两种说法都是错的。 以上两种情况都会先命中浏览器缓存，我用Chrome60反复测试了。</p>
-</li>
-<li><p>Chrome从缓存中读取数据，返回的是200 ok from disk cache/200 ok from memory cache<br>from memory cache会比from disk cache读取速度更快，两种形式应该是表明缓存读取的方式不同</p>
-</li>
-<li><p>在DevTool-&gt;network-&gt;勾选<code>disable cahce</code> 或者 <code>shift+F5</code>，都会请求最新内容(304协商缓存、强缓存都无效)</p>
+<blockquote>
+<p>第二次请求报文附加字段有两个：<br>If-None-Match: <em>ETag-value</em>  匹配上ETag，直接回送304  （浏览器以此字段为准）<br>If-Match: <em>ETag-value</em>      没有匹配上ETag，或者收到了“*”值而当前并没有该资源实体，则应当返回412</p>
+</blockquote>
+<p><strong>当If-None-Match与If-Modified-Since一同使用，If-None-Match优先级更高</strong><br><strong>Last-Modified和ETag同时被使用，则要求它们的验证都必须通过才会返回304，否则返回更新资源和200</strong></p>
+<h2 id="实际应用技巧"><a href="#实际应用技巧" class="headerlink" title="实际应用技巧"></a>实际应用技巧</h2><h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><p>1.网上有种说法，地址栏输入URL，F5/Ctrl+R(刷新按钮)用自动加上“Cache-Control:max-age=0”，不会命中强缓存，直接发起请求。<br>  另外还有一个说法， 不打开DevTool会直接向服务端发起请求，打开则会命中缓存。<br>  这两种说法都是错的。 以上两种情况都会先命中浏览器缓存，我用Chrome60反复测试了。</p>
+<p>2.Chrome从缓存中读取数据，返回的是<code>200 ok from disk cache</code> \ <code>200 ok from memory cache</code>。from memory cache会比from disk cache读取速度更快，两种形式应该是表明缓存读取的方式不同</p>
+<p>3.在DevTool-&gt;network-&gt;勾选<code>disable cahce</code> 或者 <code>shift+F5</code>，都会请求最新内容(304协商缓存、强缓存都无效)</p>
 <ul>
 <li>不会检查本地是否有缓存。</li>
 <li>请求头信息(request header)不添加If-Modified-Since和If-None-Match字段</li>
 </ul>
-</li>
-<li><p>查看所有的cache文件可在浏览器输入 chrome://view-http-cache/</p>
-</li>
-</ol>
-<h3 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h3><ol>
-<li><p>静态资源部分，特别是图片资源，需设定一个较长的缓存时间，最好是可以在资源链接上加参数 <code>max-age</code> :</p>
+<p>4.查看所有的cache文件可在浏览器输入 chrome://view-http-cache/</p>
+<h3 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h3><p>1.静态资源部分，特别是图片资源，需设定一个较长的缓存时间，最好是可以在资源链接上加参数 <code>max-age</code> :</p>
 <blockquote>
 <p><a href="http://xxxxx/logo.png?max_age=2592000" target="_blank" rel="external">http://xxxxx/logo.png?max_age=2592000</a></p>
 </blockquote>
-</li>
-<li><p>服务端在近期修改了该文件的话，因为强缓存客户端将无法获得最新，可将静态资源文件名或参数带上一串md5或时间标记符:</p>
+<p>2.服务端在近期修改了该文件的话，因为强缓存客户端将无法获得最新，可将静态资源文件名或参数带上一串md5或时间标记符:</p>
 <blockquote>
 <p><a href="https://xxxxxxx/xxxxx.js?e23800c454aa573c0ccb16b52665ac26" target="_blank" rel="external">https://xxxxxxx/xxxxx.js?e23800c454aa573c0ccb16b52665ac26</a><br><a href="http://xxxxxx/xxxxx_94e7ca2.js" target="_blank" rel="external">http://xxxxxx/xxxxx_94e7ca2.js</a></p>
 </blockquote>
-</li>
-</ol>
 ]]></content>
     
     <summary type="html">
     
       &lt;p&gt;浏览器HTTP缓存机制主要有两种 &lt;code&gt;强缓存&lt;/code&gt;（Pragma/Expires/Cache-Control）和 &lt;code&gt;缓存协商&lt;/code&gt;（Last-Modified/ETag）。&lt;/p&gt;
-&lt;h2 id=&quot;强缓存&quot;&gt;&lt;a href=&quot;#强缓存&quot; class=&quot;headerlink&quot; title=&quot;强缓存&quot;&gt;&lt;/a&gt;强缓存&lt;/h2&gt;&lt;p&gt;所谓强缓存，就是优先命中浏览器的缓存资源，当缓存不符合条件或不存在时，再向服务器发起请求。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;http 1.0&lt;/code&gt; 协议版本中通过头部字段Pragma/Expires来标识&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;http 1.1&lt;/code&gt; 协议中新增了字段Cache-Control定义缓存过期时间
+&lt;h2 id=&quot;强缓存&quot;&gt;&lt;a href=&quot;#强缓存&quot; class=&quot;headerlink&quot; title=&quot;强缓存&quot;&gt;&lt;/a&gt;强缓存&lt;/h2&gt;&lt;p&gt;所谓强缓存，就是优先命中浏览器的缓存资源，当缓存不符合条件或不存在时，再向服务器发起请求。&lt;br&gt;
     
     </summary>
     
