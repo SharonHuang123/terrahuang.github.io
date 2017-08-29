@@ -100,7 +100,7 @@
 <meta property="og:image" content="https://terrahuang.github.io/screenshot/20170728/page-source.png">
 <meta property="og:image" content="https://terrahuang.github.io/screenshot/20170728/dns.png">
 <meta property="og:image" content="https://terrahuang.github.io/screenshot/20170728/dns-express.png">
-<meta property="og:updated_time" content="2017-08-22T11:50:05.154Z">
+<meta property="og:updated_time" content="2017-08-29T10:21:56.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo+GithubPages+nexT站点搭建">
 <meta name="twitter:description" content="写在前面    趁离职期间想整理下这些年积累的东西，决定自己建个站点，为了方便简单选择了Hexo+GitHub Pages。但是做后端开发久了，真心觉得静态站点有点费事。考虑到github免费，那先将就吧，以后还是得自己搞个服务器。这篇先来讲讲搭建时遇到的坑，下一篇讲讲我对Hexo的理解。  Hexo安装关于Hexo安装操作网上有很多，建议直接参考Hexo官网。我贴下几条关键指令：">
@@ -375,17 +375,6 @@
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/07/27/hexo-github-nexT/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/07/27/hexo-github-nexT/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -457,7 +446,7 @@
 <p>具体步骤说明，请参考<strong>yuan3065的博客</strong>：<a href="http://blog.csdn.net/yuan3065/article/details/51594454" target="_blank" rel="external">GitHub Pages 绑定来自阿里云的域名</a></p>
 <h2 id="nexT主题及改造"><a href="#nexT主题及改造" class="headerlink" title="nexT主题及改造"></a>nexT主题及改造</h2><p>毕竟是自己的第一个站点，选用主题也是很谨慎的，在众多炫目的主题中选择了nexT。据说目前是得星最多的一套主题。我看中它的点如下：<br><div class="note primary"><p><strong>优势：</strong> 样式简洁，文档详细，提供的第三方服务丰富，改造容易</p>
 </div></p>
-<h3 id="主题色"><a href="#主题色" class="headerlink" title="主题色"></a>主题色</h3><p>原来的黑色太暗沉，像我心里这么阳光的人，果断换了个明亮的调调。<br>但是nexT并没有提供主题色的更改配置，我用的是笨办法，直接在<code>theme/next/source/css/</code>中修改色值。以后有时间再修改下代码，提取到_config.yml配置中来。</p>
+<h3 id="主题色"><a href="#主题色" class="headerlink" title="主题色"></a>主题色</h3><p>原来的黑色太暗沉，像我心里这么阳光的人，果断换了个明亮的调调。但是nexT并没有提供主题色的更改配置，我用的是笨办法，直接在<code>theme/next/source/css/</code>中修改色值。以后有时间再修改下代码，提取到_config.yml配置中来。</p>
 <h3 id="新增第三方服务"><a href="#新增第三方服务" class="headerlink" title="新增第三方服务"></a>新增第三方服务</h3><p>配置第三方服务比较简单，请参考<a href="http://theme-next.iissnan.com/" target="_blank" rel="external">nexT文档</a></p>
 <p>新增功能如下：</p>
 <ul>
@@ -589,12 +578,7 @@
           
   <div class="comments" id="comments">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
+      <div id="uyan_frame"></div>
     
   </div>
 
@@ -642,7 +626,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -664,7 +648,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -868,26 +852,6 @@
 
   
 
-    
-      <script id="dsq-count-scr" src="https://terrahuang.disqus.com/count.js" async></script>
-    
-
-    
-      <script type="text/javascript">
-        var disqus_config = function () {
-          this.page.url = 'https://terrahuang.github.io/2017/07/27/hexo-github-nexT/';
-          this.page.identifier = '2017/07/27/hexo-github-nexT/';
-          this.page.title = 'Hexo+GithubPages+nexT站点搭建';
-        };
-        var d = document, s = d.createElement('script');
-        s.src = 'https://terrahuang.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', '' + +new Date());
-        (d.head || d.body).appendChild(s);
-      </script>
-    
-
-  
-
 
 
 
@@ -903,6 +867,14 @@
 
 
 
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2142772"></script>
+      <!-- UY END -->
+    
   
 
 
