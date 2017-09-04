@@ -199,15 +199,17 @@
     <link href="https://terrahuang.github.io/2017/08/30/html5-debugging/"/>
     <id>https://terrahuang.github.io/2017/08/30/html5-debugging/</id>
     <published>2017-08-30T14:38:18.380Z</published>
-    <updated>2017-09-04T14:50:51.910Z</updated>
+    <updated>2017-09-04T14:56:04.368Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h2><ol>
+    <content type="html"><![CDATA[<h2 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h2><ul>
 <li>在Win OS下，只能调试android设备</li>
 <li>Android模拟器调试，真机环境下需在代码中设置WebView属性 <code>WebView.setWebContentsDebuggingEnabled(true)</code> 才能调试<a id="more"></a>
-<h2 id="软件要求"><a href="#软件要求" class="headerlink" title="软件要求"></a>软件要求</h2></li>
+</li>
+</ul>
+<h2 id="软件要求"><a href="#软件要求" class="headerlink" title="软件要求"></a>软件要求</h2><ul>
 <li>安装Chrome浏览器，版本32及以上</li>
 <li>安装任意一款安卓模拟器，如夜神，genymotion等。</li>
-</ol>
+</ul>
 <h2 id="调试步骤"><a href="#调试步骤" class="headerlink" title="调试步骤"></a>调试步骤</h2><h3 id="更新hosts文件"><a href="#更新hosts文件" class="headerlink" title="更新hosts文件"></a>更新hosts文件</h3><ol>
 <li>请前往<a href="https://laod.cn/hosts/2017-google-hosts.html" target="_blank" rel="external">https://laod.cn/hosts/2017-google-hosts.html</a> 下载最新hosts文件。</li>
 <li>更新本地host文件C:\Windows\System32\drivers\etc\hosts，或只添加google相关域名解析。<blockquote>
@@ -239,7 +241,7 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;适用范围&quot;&gt;&lt;a href=&quot;#适用范围&quot; class=&quot;headerlink&quot; title=&quot;适用范围&quot;&gt;&lt;/a&gt;适用范围&lt;/h2&gt;&lt;ol&gt;
+      &lt;h2 id=&quot;适用范围&quot;&gt;&lt;a href=&quot;#适用范围&quot; class=&quot;headerlink&quot; title=&quot;适用范围&quot;&gt;&lt;/a&gt;适用范围&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;在Win OS下，只能调试android设备&lt;/li&gt;
 &lt;li&gt;Android模拟器调试，真机环境下需在代码中设置WebView属性 &lt;code&gt;WebView.setWebContentsDebuggingEnabled(true)&lt;/code&gt; 才能调试
     
