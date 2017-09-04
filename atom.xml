@@ -199,14 +199,12 @@
     <link href="https://terrahuang.github.io/2017/08/30/html5-debugging/"/>
     <id>https://terrahuang.github.io/2017/08/30/html5-debugging/</id>
     <published>2017-08-30T14:38:18.380Z</published>
-    <updated>2017-09-04T14:44:37.151Z</updated>
+    <updated>2017-09-04T14:50:51.910Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h2><ul>
+    <content type="html"><![CDATA[<h2 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h2><ol>
 <li>在Win OS下，只能调试android设备</li>
 <li>Android模拟器调试，真机环境下需在代码中设置WebView属性 <code>WebView.setWebContentsDebuggingEnabled(true)</code> 才能调试<a id="more"></a>
 <h2 id="软件要求"><a href="#软件要求" class="headerlink" title="软件要求"></a>软件要求</h2></li>
-</ul>
-<ol>
 <li>安装Chrome浏览器，版本32及以上</li>
 <li>安装任意一款安卓模拟器，如夜神，genymotion等。</li>
 </ol>
@@ -241,7 +239,7 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;适用范围&quot;&gt;&lt;a href=&quot;#适用范围&quot; class=&quot;headerlink&quot; title=&quot;适用范围&quot;&gt;&lt;/a&gt;适用范围&lt;/h2&gt;&lt;ul&gt;
+      &lt;h2 id=&quot;适用范围&quot;&gt;&lt;a href=&quot;#适用范围&quot; class=&quot;headerlink&quot; title=&quot;适用范围&quot;&gt;&lt;/a&gt;适用范围&lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;在Win OS下，只能调试android设备&lt;/li&gt;
 &lt;li&gt;Android模拟器调试，真机环境下需在代码中设置WebView属性 &lt;code&gt;WebView.setWebContentsDebuggingEnabled(true)&lt;/code&gt; 才能调试
     
