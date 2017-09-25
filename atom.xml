@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://terrahuang.github.io/"/>
-  <updated>2017-09-04T14:33:39.022Z</updated>
+  <updated>2017-09-25T17:40:32.596Z</updated>
   <id>https://terrahuang.github.io/</id>
   
   <author>
@@ -16,11 +16,101 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>cordova中JS与Native通信原理</title>
+    <link href="https://terrahuang.github.io/2017/09/24/cordova/"/>
+    <id>https://terrahuang.github.io/2017/09/24/cordova/</id>
+    <published>2017-09-24T07:57:34.308Z</published>
+    <updated>2017-09-25T17:40:32.596Z</updated>
+    
+    <content type="html"><![CDATA[<p>上一周参加YY直播的面试，被面试官问到cordova通信原理，结果没答上来。我所知道的只是Cordova依托WebView完成JS与Native交互，但具体的原理还真没深入研究过。这篇文章就来总结下cordova在android平台上是如何实现JS与Native通信的。<br><a id="more"></a></p>
+<h3 id="Cordova-Plugin"><a href="#Cordova-Plugin" class="headerlink" title="Cordova Plugin"></a>Cordova Plugin</h3><p>Cordova框架中绝大部分原生功能都是通过Cordova Plugin来实现的。关键类是 PluginManager,NativeToJsMessageQueue,CordovaBridge以及CordovaPlugin。原生功能都是通过继承<code>CordovaPlugin</code>来实现，扩展一个原生功能非常简单，只需重载如下几个方法：</p>
+<ul>
+<li>void initialize(CordovaInterface cordova, CordovaWebView webView)</li>
+<li>boolean execute(String action, String rawArgs, CallbackContext callbackContext) //存在多态</li>
+<li>void onActivityResult(int requestCode, int resultCode, Intent intent) // activity交互</li>
+</ul>
+<p>实现过程可参见cordova提供的插件包，如Device,Camera等。然后，我们在config.xml注册下插件名及相应类名，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;feature name=&quot;Camera&quot;&gt;</div><div class="line">  &lt;param name=&quot;android-package&quot; value=&quot;org.apache.cordova.camera.CameraLauncher&quot; /&gt;</div><div class="line">&lt;/feature&gt;</div></pre></td></tr></table></figure></p>
+<p>前端JS调用接口 <code>Cordova.exec(successCallback, failCallback, &#39;Camera&#39;, method, argArr)</code>即可调用到原生功能。</p>
+<p>下面我们来了解JS与Native的通信过程, 两个方向：<strong>JS调用Native</strong>, <strong>Native调用JS</strong>。</p>
+<h3 id="JS调用Native"><a href="#JS调用Native" class="headerlink" title="JS调用Native"></a>JS调用Native</h3><p>首先，我们看下cordova.js中nativeapiprovider的实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var nativeApi = this._cordovaNative || require(&apos;cordova/android/promptbasednativeapi&apos;);</div><div class="line">var currentApi = nativeApi;</div></pre></td></tr></table></figure></p>
+<p><strong>nativeApi</strong> 有两个来源：<code>_cordovaNative</code> 和 require(‘cordova/android/promptbasednativeapi’)即 <code>prompt</code><br><strong>1. _cordovaNative</strong></p>
+<p>WebView通过<strong>addJavascriptInterface()</strong>暴露出来供前端调用，在SystemWebView（即cordova扩展的webview子类）初始化时注册的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">SystemExposedJsApi exposedJsApi = new SystemExposedJsApi(bridge);</div><div class="line">webView.addJavascriptInterface(exposedJsApi, &quot;_cordovaNative&quot;);</div></pre></td></tr></table></figure></p>
+<p>SystemExposedJsApi类实现的exec()方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@JavascriptInterface</div><div class="line">public String exec(int bridgeSecret, String service, String action, String callbackId, String arguments) throws JSONException, IllegalAccessException &#123;</div><div class="line">    return this.bridge.jsExec(bridgeSecret, service, action, callbackId, arguments);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>前端Cordova.exec()方法其实是可通过_cordovaNative.exec()直接调用到SystemExposedJsApi的exec()方法。<br><strong>CordovaBridge</strong>执行jsExec()，通过PluginManager, 调用到相应Plugin类的initialize(),execute()等方法，实现原生功能。</p>
+<p><strong>2. prompt</strong></p>
+<p>在不支持addJavascriptInterface()情况下，Native可拦截window.prompt()消息，通过解析消息来实现插件功能调用。<br>前端cordova对prompt()的实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">module.exports = &#123;</div><div class="line">    exec: function(bridgeSecret, service, action, callbackId, argsJson) &#123;</div><div class="line">        return prompt(argsJson, &apos;gap:&apos;+JSON.stringify([bridgeSecret, service, action, callbackId]));</div><div class="line">    &#125;,   </div><div class="line">    //......</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>而在Native部分，SystemWebView初始化时，通过setWebChromeClient(), 注入SystemWebChromeClient类来实现对prompt消息拦截：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public boolean onJsPrompt(WebView view, String origin, String message, String defaultValue, </div><div class="line">     final JsPromptResult result) &#123;</div><div class="line">  String handledRet = this.parentEngine.bridge.promptOnJsPrompt(origin, message, defaultValue);</div><div class="line">  if(handledRet != null) &#123;</div><div class="line">      result.confirm(handledRet);</div><div class="line">  &#125; else &#123;</div><div class="line">      //......</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>同样由<strong>CordovaBridge</strong>执行promptOnJsPrompt()解析消息后，调用jsExec()，与<strong>方式一</strong>的调用一致。</p>
+<p>以上两种方式，从JS到Native的通信关键有两点：</p>
+<ol>
+<li>WebView提供的接口addJavascriptInterface()</li>
+<li>SystemWebChromeClient父类 <strong>WebChromeClient</strong> 提供的接口onJsPrompt()</li>
+</ol>
+<p><strong>归根到底，Cordova并没有在通信机制上做文章，是沿用WebView的底层实现。</strong>这个底层实现我们放到最后来分析。</p>
+<h3 id="Native调用JS"><a href="#Native调用JS" class="headerlink" title="Native调用JS"></a>Native调用JS</h3><p>Native中调用JS, 最明显的是WebView提供的loadUrl(), 参数传入以<code>javascript:</code>开头的字符串，即可执行字符串中的JS代码。此外，就是Cordova.exec()中回调函数的执行，即 CallbackContext 如何执行。</p>
+<p><strong>1. loadUrl()</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">webView.loadUrl(&apos;file:///android_asset/www/index.html&apos;)</div><div class="line">webView.loadUrl(&apos;javascript:alert(&quot;hello world&quot;)&apos;)</div></pre></td></tr></table></figure></p>
+<p><strong>2. CallbackContext</strong></p>
+<p>当Plugin类的execute()方法执行完以后，参数callbackContext调用success()或error()或sendPluginResult()即可返回结果到前端并执行回调函数。这一过程的调用栈如下：</p>
+<ul>
+<li>webViewImpl.sendPluginResult(pluginResult, callbackId) // 参数：native执行结果，callbackId</li>
+<li>nativeToJSMessageQueue.addPluginResult()</li>
+<li>nativeToJSMessageQueue.equeueMessage() // 返回结果入队</li>
+<li>activeBridgeMode.onNativeToJSMessageAvailable() // 按当前桥接模式出队（即EvalBridgeMode）</li>
+<li>queue.popAndEncodeAsJS() // 出队并按js编码成字符串</li>
+<li>webView.evaluateJavascript() // 将结果传入前端并执行回调</li>
+</ul>
+<p>前端执行代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// 参数：callbackId，native执行结果</div><div class="line">callbackSuccess: function(callbackId, args) &#123;</div><div class="line">    cordova.callbackFromNative(callbackId, true, args.status, [args.message], args.keepCallback);</div><div class="line">&#125;,</div><div class="line"></div><div class="line">callbackError: function(callbackId, args) &#123;</div><div class="line">    cordova.callbackFromNative(callbackId, false, args.status, [args.message], args.keepCallback);</div><div class="line">&#125;,</div><div class="line"></div><div class="line">// 注：可通过callbackId找到cordova.exec()传入的回调方法。</div></pre></td></tr></table></figure></p>
+<p>以上两种方式，Native与JS还是基于WebView的底层实现：</p>
+<ol>
+<li>webview.loadUrl()</li>
+<li>webview.evaluateJavascript()</li>
+</ol>
+<h3 id="Webview底层实现"><a href="#Webview底层实现" class="headerlink" title="Webview底层实现"></a>Webview底层实现</h3><p>cordova分析了半天，JS与Native的通信其实还是基于WebView, 主要的四个方法如下：</p>
+<ul>
+<li>addJavascriptInterface()</li>
+<li>loadUrl()</li>
+<li>evaluateJavascript()</li>
+<li>onJSPrompt()</li>
+</ul>
+<p>我用最原始的办法，分析调用栈。前三个方法都在WebView类中，且由WebViewProvider提供。通过工厂构造一个WebViewProvider, 需要如下步骤：</p>
+<ol>
+<li>WebViewFactory.getProvider() // 创建WebViewFactoryProvider实现类</li>
+<li>getProviderClass() // 通过反射生成com.android.webview.chromium.WebViewChromiumFactoryProvider类</li>
+<li>创建WebViewChromiumFactoryProvider实例</li>
+<li>调用createWebView() 创建WebViewChromium（实现WebViewProvider接口）实例</li>
+</ol>
+<p>调用栈如下：</p>
+<ul>
+<li>WebViewChromium 创建AwContents实例，封装AwContents实例方法以对外调用上面提到的三个方法</li>
+<li>AwContents 创建ContentViewCore实例，封装ContentViewCore实例方法以对外调用</li>
+</ul>
+<p>最后我们看下ContentViewCore类中三个方法的实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">/* loadUrl */</div><div class="line">public void loadUrl(LoadUrlParams params) &#123;</div><div class="line">  if (mNativeContentViewCore == 0) return;</div><div class="line"></div><div class="line">  nativeLoadUrl(...params); // 参数省略了</div><div class="line">&#125;</div><div class="line"></div><div class="line">private native void nativeLoadUrl(...params);</div><div class="line"></div><div class="line">/* addJavaScriptInterface */</div><div class="line">public void addJavascriptInterface(Object object, String name) &#123;</div><div class="line">  addPossiblyUnsafeJavascriptInterface(object, name, JavascriptInterface.class);</div><div class="line">&#125;</div><div class="line">public void addPossiblyUnsafeJavascriptInterface(Object object, String name,</div><div class="line">            Class&lt;? extends Annotation&gt; requiredAnnotation) &#123;</div><div class="line">  if (mNativeContentViewCore != 0 &amp;&amp; object != null) &#123;</div><div class="line">      mJavaScriptInterfaces.put(name, object);</div><div class="line">      nativeAddJavascriptInterface(...); // 参数省略了</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private native void nativeAddJavascriptInterface(...); //参数省略了</div><div class="line"></div><div class="line">/* evaluateJavaScript */</div><div class="line">public void evaluateJavaScript(String script, JavaScriptCallback callback) throws IllegalStateException &#123;</div><div class="line">  checkIsAlive();</div><div class="line">  nativeEvaluateJavaScript(mNativeContentViewCore, script, callback);</div><div class="line">&#125;</div><div class="line"></div><div class="line">private native void nativeEvaluateJavaScript(...); //参数省略了</div></pre></td></tr></table></figure></p>
+<p>由以上代码可知，ContentViewCore类中出现了JNI, 它允许Java代码和其他语言写的代码进行交互。其实就是与webkit/chromium进行交互，webkit/chromium再与JS交互，实现通信。后面的代码我没有找到，如何从webkit/chromium到JS层交互，目前还没有答案。</p>
+<p>之前有看过分析ReactNative中JS与Native通信机制的文章，其实与webview的实现原理大同小异，都是通过Java-JNI-JS这种转换来实现通信。ReactNative可能还要复杂点，毕竟还要解析虚拟DOM。</p>
+<p>以上就是我的探讨，有新的发现再来补充。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;上一周参加YY直播的面试，被面试官问到cordova通信原理，结果没答上来。我所知道的只是Cordova依托WebView完成JS与Native交互，但具体的原理还真没深入研究过。这篇文章就来总结下cordova在android平台上是如何实现JS与Native通信的。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="HybridApp" scheme="https://terrahuang.github.io/categories/HybridApp/"/>
+    
+    
+      <category term="cordova" scheme="https://terrahuang.github.io/tags/cordova/"/>
+    
+      <category term="android" scheme="https://terrahuang.github.io/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
     <title>(转) JavaScript 疲劳终极指南：我们行业的真相</title>
     <link href="https://terrahuang.github.io/2017/09/04/forward-1/"/>
     <id>https://terrahuang.github.io/2017/09/04/forward-1/</id>
-    <published>2017-09-04T14:33:26.940Z</published>
-    <updated>2017-09-04T14:33:39.022Z</updated>
+    <published>2017-09-04T14:33:26.941Z</published>
+    <updated>2017-09-04T14:33:39.023Z</updated>
     
     <content type="html"><![CDATA[<p>看到这篇文章，很有感触，恰好是我在上一家公司面临的困惑。为了减小支出，几乎不愿做新技术尝试，大多数开发人员都在不停重复。文章说到，测试驱动开发，但是在公司里绝大多数项目没有单元测试代码，测试人员都相当少，集成测试，回归测试，用户测试只是走个程序。移动端开发更甚，为了节约时间，连测试都省了，线上问题层出不穷。我相信其它公司也有这种现象，但究竟怎么做才是支出与收益的平衡呢？使用一种技术是为了解决问题，但是如果有更好的方案呢？<a id="more"></a></p>
 <blockquote>
@@ -164,8 +254,8 @@
     <title>存储过程避免参数嗅探</title>
     <link href="https://terrahuang.github.io/2017/08/30/parameter-sniffing/"/>
     <id>https://terrahuang.github.io/2017/08/30/parameter-sniffing/</id>
-    <published>2017-08-30T15:12:15.346Z</published>
-    <updated>2017-09-04T14:28:46.816Z</updated>
+    <published>2017-08-30T15:12:15.347Z</published>
+    <updated>2017-09-04T14:28:46.817Z</updated>
     
     <content type="html"><![CDATA[<p>以前写 SQL Server 存储过程的时候，碰到过一个问题。本来是一个很简单的查询，复杂度也不高，参数@date传成null时，查询特别慢。查了下资料，发现SQL Server有一个叫<code>Parameter sniffing</code>的特性。什么是参数嗅探？可以参见这篇文章：<a href="http://www.cnblogs.com/lyhabc/articles/3222179.html" target="_blank" rel="external">参数嗅探ParameterSniffing</a>。<br><a id="more"></a></p>
 <h3 id="性能影响"><a href="#性能影响" class="headerlink" title="性能影响"></a>性能影响</h3><p>SQL Server在存储过程执行之前都会制定一个执行计划。SQL在编译的时候并不知道参数@date的值是多少，所以它在执行执行计划的时候就要进行大量的猜测。假设传递给@date的参数大部分都是非空字符串，而FACT表中有40%的date字段都是null，那么SQL Server就会选择全表扫描而不是索引扫描来对参数@date制定执行计划。全表扫描是在参数为空或为0的时候最好的执行计划，但是全表扫描严重影响了性能。</p>
@@ -199,14 +289,11 @@
     <link href="https://terrahuang.github.io/2017/08/30/html5-debugging/"/>
     <id>https://terrahuang.github.io/2017/08/30/html5-debugging/</id>
     <published>2017-08-30T14:38:18.380Z</published>
-    <updated>2017-09-04T14:56:04.368Z</updated>
+    <updated>2017-09-08T07:08:44.596Z</updated>
     
     <content type="html"><![CDATA[<h2 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h2><ul>
 <li>在Win OS下，只能调试android设备</li>
-<li>Android模拟器调试，真机环境下需在代码中设置WebView属性 <code>WebView.setWebContentsDebuggingEnabled(true)</code> 才能调试<a id="more"></a>
-</li>
-</ul>
-<h2 id="软件要求"><a href="#软件要求" class="headerlink" title="软件要求"></a>软件要求</h2><ul>
+<li>Android模拟器调试，真机环境下需在代码中设置WebView属性 <code>WebView.setWebContentsDebuggingEnabled(true)</code> 才能调试<h2 id="软件要求"><a href="#软件要求" class="headerlink" title="软件要求"></a>软件要求</h2><a id="more"></a></li>
 <li>安装Chrome浏览器，版本32及以上</li>
 <li>安装任意一款安卓模拟器，如夜神，genymotion等。</li>
 </ul>
@@ -243,18 +330,18 @@
     
       &lt;h2 id=&quot;适用范围&quot;&gt;&lt;a href=&quot;#适用范围&quot; class=&quot;headerlink&quot; title=&quot;适用范围&quot;&gt;&lt;/a&gt;适用范围&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;在Win OS下，只能调试android设备&lt;/li&gt;
-&lt;li&gt;Android模拟器调试，真机环境下需在代码中设置WebView属性 &lt;code&gt;WebView.setWebContentsDebuggingEnabled(true)&lt;/code&gt; 才能调试
+&lt;li&gt;Android模拟器调试，真机环境下需在代码中设置WebView属性 &lt;code&gt;WebView.setWebContentsDebuggingEnabled(true)&lt;/code&gt; 才能调试&lt;h2 id=&quot;软件要求&quot;&gt;&lt;a href=&quot;#软件要求&quot; class=&quot;headerlink&quot; title=&quot;软件要求&quot;&gt;&lt;/a&gt;软件要求&lt;/h2&gt;
     
     </summary>
     
       <category term="前端" scheme="https://terrahuang.github.io/categories/%E5%89%8D%E7%AB%AF/"/>
     
     
+      <category term="android" scheme="https://terrahuang.github.io/tags/android/"/>
+    
       <category term="webapp" scheme="https://terrahuang.github.io/tags/webapp/"/>
     
       <category term="html5" scheme="https://terrahuang.github.io/tags/html5/"/>
-    
-      <category term="android" scheme="https://terrahuang.github.io/tags/android/"/>
     
   </entry>
   
@@ -263,7 +350,7 @@
     <link href="https://terrahuang.github.io/2017/08/30/fetch/"/>
     <id>https://terrahuang.github.io/2017/08/30/fetch/</id>
     <published>2017-08-30T14:08:26.876Z</published>
-    <updated>2017-09-04T14:40:02.132Z</updated>
+    <updated>2017-09-04T14:40:02.133Z</updated>
     
     <content type="html"><![CDATA[<p>fetch API 提供了一个JavaScript接口，用于访问和操纵HTTP管道的部分，例如请求和响应。它还提供了一个全局 fetch()方法，该方法提供了一种简单，合乎逻辑的方式来跨网络异步获取资源。</p>
 <p>fetch()的实质是将XMLHttpRequest结合Promise做了一层封装，返回的是一个Promise对象。另外，fetch()中数据传送是以数据流（stream）的形式进行的。具体请参见：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/GlobalFetch/fetch" target="_blank" rel="external">MDN文档</a><br><a id="more"></a></p>
@@ -330,7 +417,7 @@
     <title>form表单提交常见问题</title>
     <link href="https://terrahuang.github.io/2017/08/30/form/"/>
     <id>https://terrahuang.github.io/2017/08/30/form/</id>
-    <published>2017-08-30T14:04:07.177Z</published>
+    <published>2017-08-30T14:04:07.178Z</published>
     <updated>2017-09-04T14:41:27.668Z</updated>
     
     <content type="html"><![CDATA[<p>form表单提交是一个很基础的问题，但是仔细研究下还是挺有意思的。下面，先贴一段html代码，作为讨论的前提：<a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</div><div class="line">  &lt;div&gt;</div><div class="line">    &lt;label&gt;用户名&lt;/label&gt;</div><div class="line">    &lt;input placeholder=&quot;用户名&quot; type=&quot;text&quot; name=&quot;name&quot;&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">  &lt;div&gt;</div><div class="line">    &lt;label&gt;密码&lt;/label&gt;</div><div class="line">    &lt;input placeholder=&quot;密码&quot; type=&quot;password&quot; name=&quot;password&quot;&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">  &lt;div&gt;</div><div class="line">    &lt;label&gt;头像&lt;/label&gt;</div><div class="line">    &lt;input type=&quot;file&quot; name=&quot;avatar&quot; /&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">  &lt;input id=&quot;save&quot; type=&quot;submit&quot; value=&quot;提交&quot;&gt;</div><div class="line">  &lt;button&gt;button提交&lt;/button&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
